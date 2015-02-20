@@ -1,0 +1,22 @@
+.row
+  .col-md-6.col-md-offset-3
+    h1 Upload your module and patch
+
+    hr/
+
+    form action="/upload" method="POST" enctype="multipart/form-data"
+      .form-group
+        label for="module" Module archive(.tar.gz or .zip)
+        input type="file" name="module" class="form-control"/
+      .form-group
+        label for="patch" Patch file(.patch)
+        input type="file" name="patch" class="form-control"/
+      .form-group
+        input type="Submit" name="send" value="Patch!" class="btn btn-primary"/
+        - if flash[:link]
+          a href="/download/#{flash[:link]}" class="btn btn-success pull-right" Download patched module
+- if flash[:output]
+  .row
+    .col-md-6.col-md-offset-3.well
+      pre
+        = flash[:output]
