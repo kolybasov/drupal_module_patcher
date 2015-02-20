@@ -26,17 +26,27 @@ class App < Sinatra::Base
 
   post '/upload' do
     result = DrupalPatcher.patch(params[:module], params[:patch])
-    flash[:link], flash[:output] = result[:file], result[:output]
+    if result.is_a?(Hash)
+      unless contains_errors(result[:output])
+        flash[:link] = result[:file]
+      end
+      flash[:output] = result[:output]
+    else
+      flash[:output] = result
+    end
     redirect '/'
   end
 
-  get '/download/:file' do |file|
-    dir = file.split(".").first
+  get '/download/:dir/:file' do |dir, file|
     send_file File.join("temp/#{dir}", file)
   end
 
   # Helpers
   helpers do
-
+    def contains_errors(output)
+      output.include?('Assume -R? [n]') or output.include?('can\'t find file') or
+      output.include?('fail') or output.include?('Skipping patch') or
+      output.include?('patch unexpectedly ends')
+    end
   end
 end

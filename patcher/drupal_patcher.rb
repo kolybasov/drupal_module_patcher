@@ -21,9 +21,9 @@ class DrupalPatcher
         # Patch module
         output = `patch < #{patch_name} && rm #{patch_name}`
         # Compress result
-        file = compress dirname.split("/").last
+        file = compress module_name
         # Return data
-        { file: file, output: output }
+        { file: "#{dirname.split("/").last}/#{file}", output: output }
       end
     rescue => e
       "Aborted! Error: #{e}"
@@ -42,8 +42,8 @@ class DrupalPatcher
       end
 
       def compress(filename)
-        `zip -r #{filename}.zip .`
-        "#{filename}.zip"
+        `zip -r #{filename}_patched.zip .`
+        "#{filename}_patched.zip"
       rescue => e
         "Cannot compress files! Error: #{e}"
       end
